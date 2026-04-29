@@ -1,97 +1,300 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# NeuroRoute - Inclusive Urban Navigation
 
-# Getting Started
+**Smart Navigation for Inclusive Mobility**
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+NeuroRoute is a React Native CLI mobile application designed to help people with disabilities, sensory sensitivities, or neurodiverse profiles choose safer and more comfortable routes in the city. The app optimizes not just distance and time, but also comfort, accessibility, noise level, crowd density, lighting, and environmental conditions.
 
-## Step 1: Start Metro
+## Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Personalized Route Recommendations**: Routes tailored to your specific needs and preferences
+- **Accessibility-First Design**: Large buttons, readable text, high contrast, screen reader support
+- **Environmental Scoring**: Comfort, safety, accessibility, noise, and crowd level metrics
+- **Multiple Transport Modes**: Walking, cycling, driving, and public transport options
+- **Mock AI Integration**: Structured for future AI route recommendation system
+- **Offline Profile Storage**: User preferences saved locally with AsyncStorage
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Tech Stack
 
-```sh
-# Using npm
+- **React Native CLI** (v0.85.2)
+- **JavaScript/JSX**
+- **React Navigation** (Native Stack)
+- **react-native-maps** (Google Maps)
+- **AsyncStorage** for local data persistence
+- **PropTypes** for runtime type validation
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js >= 22.11.0
+- React Native development environment (Android Studio/Xcode)
+- Android SDK (for Android development)
+
+### Installation
+
+1. **Install dependencies** (already done):
+```bash
+npm install
+```
+
+2. **Start Metro bundler**:
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+3. **Run on Android**:
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+### Demo Mode
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+This app uses **mock authentication** for easy testing:
+- Tap "Sign in with Google" or "Continue as Guest"
+- No real Firebase setup required
+- All data is stored locally on device
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## App Workflow & Screen Flow
 
-```sh
-bundle install
+```
+[Splash Screen] → [Onboarding] → [Auth] → [Profile Setup] → [Home]
+                                                      ↓
+                           [Settings] ← [Profile] ← [Home]
+                                              ↓
+                           [Map] ← [Route Selection] ← [Home]
+                                              ↓
+                                    [Navigation Details]
 ```
 
-Then, and every time you update your native dependencies, run:
+### Screen Descriptions
 
-```sh
-bundle exec pod install
+| Screen | Purpose | Navigation |
+|--------|---------|------------|
+| **SplashScreen** | App logo, slogan "Smart Navigation for Inclusive Mobility", loading | Auto-navigates to Onboarding (first launch) or Home (logged in) |
+| **OnboardingScreen** | 3-page introduction: Inclusive Navigation, Personalized Routes, Comfort Design | Next/Skip/Get Started buttons |
+| **AuthScreen** | Google Sign-In (mock) and Guest login options | Login → ProfileSetup |
+| **ProfileSetupScreen** | Collect user preferences: disability type, sensitivity, transport mode, avoid preferences | Save → Home |
+| **HomeScreen** | Greeting with user name, search (From/To), quick route cards | Find Route → RouteSelection |
+| **RouteSelectionScreen** | Shows 4 route options with scores (comfort, safety, accessibility) | Select → Map |
+| **MapScreen** | Google Maps view with route line, warning markers, bottom info card | Start Navigation → NavigationDetails |
+| **NavigationDetailsScreen** | Turn-by-turn instructions with environmental notes | Previous/Next step navigation |
+| **ProfileScreen** | View/edit user info, see saved preferences, logout | Edit → ProfileSetup |
+| **SettingsScreen** | Language, theme, accessibility options (large text, high contrast, voice guidance) | - |
+
+## Project Structure
+
+```
+src/
+├── components/           # Reusable UI components
+│   ├── Button.jsx       # Accessible button with variants
+│   ├── Card.jsx         # Rounded card with shadows
+│   ├── Input.jsx        # Accessible text input
+│   ├── ScoreBadge.jsx   # Circular score indicator
+│   └── RouteCard.jsx    # Route option display
+├── screens/             # All screen components
+│   ├── SplashScreen.jsx
+│   ├── OnboardingScreen.jsx
+│   ├── AuthScreen.jsx
+│   ├── ProfileSetupScreen.jsx
+│   ├── HomeScreen.jsx
+│   ├── RouteSelectionScreen.jsx
+│   ├── MapScreen.jsx
+│   ├── NavigationDetailsScreen.jsx
+│   ├── ProfileScreen.jsx
+│   └── SettingsScreen.jsx
+├── navigation/          # Navigation setup
+│   ├── AuthContext.jsx  # Auth state management
+│   ├── AppNavigator.jsx # Stack navigator configuration
+│   └── routes.js        # Route name constants
+├── services/            # Business logic
+│   ├── storageService.js    # AsyncStorage wrapper
+│   ├── authService.js       # Authentication (mock)
+│   └── routeService.js      # Route calculation (mock)
+├── data/                # Mock data
+│   └── mockRoutes.js    # Sample routes with environmental data
+├── constants/           # App constants
+│   ├── colors.js        # Color palette
+│   ├── theme.js         # Spacing, fonts, shadows
+│   ├── propTypes.js     # PropTypes definitions
+│   └── index.js         # Centralized exports
+├── hooks/               # Custom React hooks
+├── utils/               # Helper functions
+└── assets/              # Images and fonts
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## File Relationships & Data Flow
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+### Component Dependencies
+```
+Button, Card, Input, ScoreBadge ← constants/colors, constants/theme
+RouteCard ← Card, Button, ScoreBadge
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Screen Dependencies
+```
+HomeScreen ← Input, Button, RouteCard, storageService
+RouteSelectionScreen ← RouteCard, routeService
+MapScreen ← ScoreBadge, Card, Button, react-native-maps
+ProfileSetupScreen ← Input, Button, Card, storageService
+```
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### Service Architecture
+```
+AuthContext (Provider)
+    ├── storageService (AsyncStorage)
+    │   ├── User Profile
+    │   ├── App Settings
+    │   └── Auth Token
+    ├── authService (Mock Google/Guest login)
+    └── routeService (Mock route calculation)
+        └── mockRoutes.js
+```
 
-## Step 3: Modify your app
+### Data Flow Example: Finding a Route
+```
+1. User enters From/To in HomeScreen
+2. HomeScreen calls navigation.navigate('RouteSelection', params)
+3. RouteSelectionScreen calls routeService.getRoutes(origin, dest, profile)
+4. routeService calculates personalized scores using userProfile.avoidPreferences
+5. Routes are sorted and filtered
+6. RouteSelectionScreen displays RouteCard components
+7. User selects a route → navigation.navigate('Map', { route })
+8. MapScreen displays route on react-native-maps with warning markers
+```
 
-Now that you have successfully run the app, let's make changes!
+## Design System
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### Color Palette
+- **Primary**: #1a237e (Dark Blue)
+- **Secondary**: #4caf50 (Green)
+- **Background**: #ffffff (White)
+- **Surface**: #f5f5f5 (Light Gray)
+- **Error**: #d32f2f (Red)
+- **Warning**: #f57c00 (Orange)
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Accessibility Features
+- Minimum touch target: 48x48dp
+- Minimum font size: 16sp
+- High contrast mode support
+- Screen reader labels on all interactive elements
+- Large text mode option
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## Mock Data Structure
 
-## Congratulations! :tada:
+### Route Object
+```javascript
+{
+  id: 'route_1',
+  type: 'shortest' | 'calm' | 'accessible' | 'balanced',
+  mode: 'walking' | 'bicycle' | 'car' | 'public_transport',
+  duration: 12,        // minutes
+  distance: 950,       // meters
+  comfortScore: 65,    // 0-100
+  noiseLevel: 'low' | 'medium' | 'high',
+  crowdLevel: 'low' | 'medium' | 'high',
+  accessibilityScore: 70, // 0-100
+  safetyScore: 75,     // 0-100
+  warnings: ['high_noise', 'crowded_zone'],
+  coordinates: [{ lat, lng }, ...],
+  steps: [{
+    instruction: 'Turn right on Main St',
+    distance: 200,
+    duration: 2,
+    notes: 'Environmental note'
+  }]
+}
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+### User Profile
+```javascript
+{
+  id: 'user_123',
+  name: 'John Doe',
+  age: 30,
+  gender: 'male',
+  disabilityType: ['mobility_impairment', 'sensory_sensitivity'],
+  sensitivityLevel: 'high',
+  preferredMode: 'walking',
+  avoidPreferences: ['noisy_areas', 'stairs']
+}
+```
 
-### Now what?
+## Future AI Integration
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+The app is structured for easy AI model integration:
 
-# Troubleshooting
+1. **API Service Layer**: `services/routeService.js` is designed to switch from mock data to real API calls
+2. **Route Calculation**: `calculatePersonalizedScore()` can be replaced with ML model predictions
+3. **Environmental Data**: Mock warnings will come from real-time sensors and databases
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+To integrate AI:
+```javascript
+// In services/routeService.js, replace:
+export const getRoutes = async (origin, destination, profile) => {
+  // Current: return mock data
+  // Future: 
+  // const response = await fetch('YOUR_AI_API/routes', {
+  //   method: 'POST',
+  //   body: JSON.stringify({ origin, destination, profile })
+  // });
+  // return response.json();
+};
+```
 
-# Learn More
+## Testing Checklist
 
-To learn more about React Native, take a look at the following resources:
+### Setup Verification
+- [ ] App launches without errors
+- [ ] Splash screen displays for 2.5 seconds
+- [ ] Onboarding shows 3 pages with navigation
+- [ ] Auth screen accepts mock login
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### Feature Testing
+- [ ] Profile setup saves to AsyncStorage
+- [ ] Home screen shows greeting with user name
+- [ ] Route search displays 4 route options
+- [ ] Map displays route line with markers
+- [ ] Navigation details show turn-by-turn instructions
+- [ ] Profile can be viewed and edited
+- [ ] Settings persist after app restart
+
+### Accessibility Testing
+- [ ] All touch targets ≥ 48x48dp
+- [ ] Text size increases with "Large Text" setting
+- [ ] Screen reader announces buttons correctly
+- [ ] High contrast mode works
+
+## Troubleshooting
+
+### Common Issues
+
+**Metro bundler not starting:**
+```bash
+npx react-native start --reset-cache
+```
+
+**Android build fails:**
+```bash
+cd android && ./gradlew clean && cd .. && npm run android
+```
+
+**Maps not displaying:**
+- Ensure you have a valid Google Maps API key in `android/app/src/main/AndroidManifest.xml`
+
+### Dependencies
+
+Key packages installed:
+- `@react-navigation/native` & `@react-navigation/native-stack`
+- `react-native-maps` - Map visualization
+- `@react-native-async-storage/async-storage` - Local storage
+- `react-native-vector-icons` - Material Design icons
+- `react-native-safe-area-context` - Safe area handling
+- `prop-types` - Runtime type checking
+
+## License
+
+This is a demo prototype for educational purposes.
+
+---
+
+**Made with ❤️ for inclusive mobility**
