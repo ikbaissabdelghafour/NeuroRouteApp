@@ -1,25 +1,26 @@
-// Main App Entry Point
-// Configures navigation with AuthProvider
-
 import React from 'react';
-import { StatusBar } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AuthProvider } from './src/navigation/AuthContext';
-import AppNavigator from './src/navigation/AppNavigator';
-import { COLORS } from './src/constants/colors';
+import { View, Text, StyleSheet } from 'react-native';
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={COLORS.primary}
-      />
-      <AuthProvider>
-        <AppNavigator />
-      </AuthProvider>
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <Text style={styles.text}>App Reset - Ready for New Implementation</Text>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+});
 
 export default App;
